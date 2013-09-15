@@ -31,7 +31,6 @@ public class FixedSocksSelector extends FixedProxySelector {
      * @param proxyPort the port of the proxy.
      *                  **********************************************************************
      */
-
     public FixedSocksSelector(String proxyHost, int proxyPort) {
         super(new Proxy(Proxy.Type.SOCKS,
                 InetSocketAddress.createUnresolved(proxyHost, proxyPort)));

@@ -189,7 +189,7 @@ public class PacScriptMethods implements ScriptMethods {
             return InetAddress.getByName(host).getHostAddress();
         } catch (UnknownHostException e) {
             log.debug(
-                    "DNS name not resolvable {0}.", host);
+                    "DNS name not resolvable {}.", host);
             // Not resolvable.
         }
         return "";
@@ -213,7 +213,7 @@ public class PacScriptMethods implements ScriptMethods {
             }
         } catch (UnknownHostException e) {
             log.debug(
-                    "DNS name not resolvable {0}.", host);
+                    "DNS name not resolvable {}.", host);
         }
         return result.toString();
     }
@@ -300,7 +300,7 @@ public class PacScriptMethods implements ScriptMethods {
             return true;
         } catch (UnknownHostException ex) {
             log.debug(
-                    "Hostname not resolveable {0}.", host);
+                    "Hostname not resolveable {}.", host);
             // Not resolvable
         }
         return false;

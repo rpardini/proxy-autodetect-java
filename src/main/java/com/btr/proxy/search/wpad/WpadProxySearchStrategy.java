@@ -41,7 +41,6 @@ public class WpadProxySearchStrategy implements ProxySearchStrategy {
      * Constructor
      * **********************************************************************
      */
-
     public WpadProxySearchStrategy() {
         super();
     }
@@ -71,7 +70,7 @@ public class WpadProxySearchStrategy implements ProxySearchStrategy {
             if (pacScriptUrl == null) {
                 return null;
             }
-            log.debug("PAC script url found: {0}", pacScriptUrl);
+            log.debug("PAC script url found: {}", pacScriptUrl);
             return new PacProxySelector(new UrlPacScriptSource(pacScriptUrl));
         } catch (IOException e) {
             log.error("Error during WPAD search.", e);
@@ -147,7 +146,7 @@ public class WpadProxySearchStrategy implements ProxySearchStrategy {
             // Try to connect to URL
             try {
                 URL lookupURL = new URL("http://wpad." + fqdn + "/wpad.dat");
-                log.debug("Trying url: {0}", lookupURL);
+                log.debug("Trying url: {}", lookupURL);
 
                 HttpURLConnection con = (HttpURLConnection) lookupURL.openConnection(Proxy.NO_PROXY);
                 con.setInstanceFollowRedirects(true);

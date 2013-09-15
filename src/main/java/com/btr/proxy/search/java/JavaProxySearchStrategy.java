@@ -56,7 +56,6 @@ public class JavaProxySearchStrategy implements ProxySearchStrategy {
      * Will use the default environment variables.
      * **********************************************************************
      */
-
     public JavaProxySearchStrategy() {
         super();
     }
@@ -126,7 +125,7 @@ public class JavaProxySearchStrategy implements ProxySearchStrategy {
             return;
         }
 
-        log.debug(protocol.toUpperCase() + " proxy {0}:{1} found using whitelist: {2}", host, port, whiteList);
+        log.debug(protocol.toUpperCase() + " proxy {}:{} found using whitelist: {}", host, port, whiteList);
 
         ProxySelector protocolSelector = new FixedProxySelector(host, Integer.parseInt(port));
         if (whiteList.trim().length() > 0) {
@@ -149,7 +148,7 @@ public class JavaProxySearchStrategy implements ProxySearchStrategy {
         String host = System.getProperty("socksProxyHost");
         String port = System.getProperty("socksProxyPort", "1080");
         if (host != null && host.trim().length() > 0) {
-            log.debug("Socks proxy {0}:{1} found", host, port);
+            log.debug("Socks proxy {}:{} found", host, port);
             ps.setSelector("socks", new FixedSocksSelector(host, Integer.parseInt(port)));
         }
     }

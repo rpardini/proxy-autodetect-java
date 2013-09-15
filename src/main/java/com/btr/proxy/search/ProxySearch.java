@@ -54,14 +54,13 @@ public class ProxySearch implements ProxySearchStrategy {
      * @return a ProxySearch initialized with default settings.
      *         **********************************************************************
      */
-
     public static ProxySearch getDefaultProxySearch() {
         ProxySearch s = new ProxySearch();
 
         s.addStrategy(Strategy.JAVA);
         s.addStrategy(Strategy.ENV_VAR);
         s.addStrategy(Strategy.WPAD);
-        log.debug("Using default search priority: {0}", s);
+        log.debug("Using default search priority: {}", s);
 
         return s;
     }
@@ -136,7 +135,6 @@ public class ProxySearch implements ProxySearchStrategy {
      *         builder configuration.
      *         **********************************************************************
      */
-
     public ProxySelector getProxySelector() {
         log.debug("Executing search strategies to find proxy selector");
         for (ProxySearchStrategy strat : this.strategies) {
@@ -147,7 +145,7 @@ public class ProxySearch implements ProxySearchStrategy {
                     return selector;
                 }
             } catch (ProxyException e) {
-                log.debug("Strategy {0} failed trying next one.", e);
+                log.debug("Strategy {} failed trying next one.", e);
                 // Ignore and try next strategy.
             }
         }

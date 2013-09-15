@@ -59,7 +59,7 @@ public class UrlPacScriptSource implements PacScriptSource {
                     this.scriptContent = downloadPacContent(this.scriptUrl);
                 }
             } catch (IOException e) {
-                log.error("Loading script failed from: {0} with error {1}", this.scriptUrl, e);
+                log.error("Loading script failed from: {} with error {}", this.scriptUrl, e);
                 this.scriptContent = "";
                 throw e;
             }

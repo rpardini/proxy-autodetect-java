@@ -25,7 +25,6 @@ public class PlatformUtil {
      * @return a browser ID, null if no supported browser was detected.
      *         **********************************************************************
      */
-
     public static Browser getDefaultBrowser() {
         // Use better logic to detect default browser?
         if (getCurrentPlattform() == Platform.WIN) {
@@ -47,22 +46,22 @@ public class PlatformUtil {
 
     public static Platform getCurrentPlattform() {
         String osName = System.getProperty("os.name");
-        log.debug("Detecting platform. Name is: {0}", osName);
+        log.debug("Detecting platform. Name is: {}", osName);
 
         if (osName.toLowerCase().contains("windows")) {
-            log.debug("Detected Windows platform: {0}", osName);
+            log.debug("Detected Windows platform: {}", osName);
             return Platform.WIN;
         }
         if (osName.toLowerCase().contains("linux")) {
-            log.debug("Detected Linux platform: {0}", osName);
+            log.debug("Detected Linux platform: {}", osName);
             return Platform.LINUX;
         }
         if (osName.startsWith("Mac OS")) {
-            log.debug("Detected Mac OS platform: {0}", osName);
+            log.debug("Detected Mac OS platform: {}", osName);
             return Platform.MAC_OS;
         }
         if (osName.startsWith("SunOS")) {
-            log.debug("Detected Solaris platform: {0}", osName);
+            log.debug("Detected Solaris platform: {}", osName);
             return Platform.SOLARIS;
         }
 
