@@ -1,0 +1,66 @@
+package com.btr.proxy.selector.pac;
+
+import com.btr.proxy.util.ProxyException;
+
+/**
+ * **************************************************************************
+ * Exception for PAC script errors.
+ *
+ * @author Bernd Rosstauscher (proxyvole@rosstauscher.de) Copyright 2009
+ *         **************************************************************************
+ */
+
+public class ProxyEvaluationException extends ProxyException {
+// ------------------------------ FIELDS ------------------------------
+
+    private static final long serialVersionUID = 1L;
+
+// --------------------------- CONSTRUCTORS ---------------------------
+
+    /**
+     * **********************************************************************
+     * Constructor
+     * **********************************************************************
+     */
+
+    public ProxyEvaluationException() {
+        super();
+    }
+
+    /**
+     * **********************************************************************
+     * Constructor
+     *
+     * @param message the error message.
+     *                **********************************************************************
+     */
+
+    public ProxyEvaluationException(String message) {
+        super(message);
+    }
+
+    /**
+     * **********************************************************************
+     * Constructor
+     *
+     * @param cause the causing exception for exception chaining.
+     *              **********************************************************************
+     */
+
+    public ProxyEvaluationException(Throwable cause) {
+        super(cause);
+    }
+
+    /**
+     * **********************************************************************
+     * Constructor
+     *
+     * @param message the error message.
+     * @param cause   the causing exception for exception chaining.
+     *                **********************************************************************
+     */
+
+    public ProxyEvaluationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
