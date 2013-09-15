@@ -1,6 +1,7 @@
 package com.btr.proxy.util;
 
-import com.btr.proxy.util.Logger.LogLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * **************************************************************************
@@ -11,6 +12,10 @@ import com.btr.proxy.util.Logger.LogLevel;
  */
 
 public class PlatformUtil {
+// ------------------------------ FIELDS ------------------------------
+
+    private static Logger log = LoggerFactory.getLogger(PlatformUtil.class);
+
 // -------------------------- STATIC METHODS --------------------------
 
     /**
@@ -24,10 +29,10 @@ public class PlatformUtil {
     public static Browser getDefaultBrowser() {
         // Use better logic to detect default browser?
         if (getCurrentPlattform() == Platform.WIN) {
-            Logger.log(PlatformUtil.class, LogLevel.TRACE, "Detected Browser is InternetExplorer");
+            log.debug("Detected Browser is InternetExplorer");
             return Browser.IE;
         } else {
-            Logger.log(PlatformUtil.class, LogLevel.TRACE, "Detected Browser Firefox. Fallback?");
+            log.debug("Detected Browser Firefox. Fallback?");
             return Browser.FIREFOX;
         }
     }
@@ -42,22 +47,22 @@ public class PlatformUtil {
 
     public static Platform getCurrentPlattform() {
         String osName = System.getProperty("os.name");
-        Logger.log(PlatformUtil.class, LogLevel.TRACE, "Detecting platform. Name is: {0}", osName);
+        log.debug("Detecting platform. Name is: {0}", osName);
 
         if (osName.toLowerCase().contains("windows")) {
-            Logger.log(PlatformUtil.class, LogLevel.TRACE, "Detected Windows platform: {0}", osName);
+            log.debug("Detected Windows platform: {0}", osName);
             return Platform.WIN;
         }
         if (osName.toLowerCase().contains("linux")) {
-            Logger.log(PlatformUtil.class, LogLevel.TRACE, "Detected Linux platform: {0}", osName);
+            log.debug("Detected Linux platform: {0}", osName);
             return Platform.LINUX;
         }
         if (osName.startsWith("Mac OS")) {
-            Logger.log(PlatformUtil.class, LogLevel.TRACE, "Detected Mac OS platform: {0}", osName);
+            log.debug("Detected Mac OS platform: {0}", osName);
             return Platform.MAC_OS;
         }
         if (osName.startsWith("SunOS")) {
-            Logger.log(PlatformUtil.class, LogLevel.TRACE, "Detected Solaris platform: {0}", osName);
+            log.debug("Detected Solaris platform: {0}", osName);
             return Platform.SOLARIS;
         }
 
@@ -76,11 +81,11 @@ public class PlatformUtil {
         Platform platf = getCurrentPlattform();
 
         if (platf == Platform.WIN) {
-            Logger.log(PlatformUtil.class, LogLevel.TRACE, "Detected Windows desktop");
+            log.debug("Detected Windows desktop");
             return Desktop.WIN;
         }
         if (platf == Platform.MAC_OS) {
-            Logger.log(PlatformUtil.class, LogLevel.TRACE, "Detected Mac OS desktop");
+            log.debug("Detected Mac OS desktop");
             return Desktop.MAC_OS;
         }
 
@@ -88,15 +93,15 @@ public class PlatformUtil {
                 || platf == Platform.SOLARIS
                 || platf == Platform.OTHER) {
             if (isKDE()) {
-                Logger.log(PlatformUtil.class, LogLevel.TRACE, "Detected KDE desktop");
+                log.debug("Detected KDE desktop");
                 return Desktop.KDE;
             }
             if (isGnome()) {
-                Logger.log(PlatformUtil.class, LogLevel.TRACE, "Detected Gnome desktop");
+                log.debug("Detected Gnome desktop");
                 return Desktop.GNOME;
             }
         }
-        Logger.log(PlatformUtil.class, LogLevel.TRACE, "Detected Unknown desktop");
+        log.debug("Detected Unknown desktop");
         return Desktop.OTHER;
     }
 

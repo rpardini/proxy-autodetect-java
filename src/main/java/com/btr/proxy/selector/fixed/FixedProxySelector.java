@@ -1,5 +1,8 @@
 package com.btr.proxy.selector.fixed;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
@@ -18,6 +21,8 @@ import java.util.List;
 public class FixedProxySelector extends ProxySelector {
 // ------------------------------ FIELDS ------------------------------
 
+    private Logger log = LoggerFactory.getLogger(getClass());
+
     private final List<Proxy> proxyList;
 
 // --------------------------- CONSTRUCTORS ---------------------------
@@ -29,7 +34,6 @@ public class FixedProxySelector extends ProxySelector {
      * @param proxy the proxy to use.
      *              **********************************************************************
      */
-
     public FixedProxySelector(Proxy proxy) {
         super();
 
@@ -61,7 +65,6 @@ public class FixedProxySelector extends ProxySelector {
      * @see java.net.ProxySelector#connectFailed(java.net.URI, java.net.SocketAddress, java.io.IOException)
      *      **********************************************************************
      */
-
     @Override
     public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
         // Not used

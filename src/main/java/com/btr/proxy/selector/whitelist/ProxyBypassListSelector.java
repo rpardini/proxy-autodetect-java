@@ -2,6 +2,8 @@ package com.btr.proxy.selector.whitelist;
 
 import com.btr.proxy.util.ProxyUtil;
 import com.btr.proxy.util.UriFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.Proxy;
@@ -23,6 +25,8 @@ import java.util.List;
 public class ProxyBypassListSelector extends ProxySelector {
 // ------------------------------ FIELDS ------------------------------
 
+    private Logger log = LoggerFactory.getLogger(getClass());
+
     private ProxySelector delegate;
     private List<UriFilter> whiteListFilter;
 
@@ -36,7 +40,6 @@ public class ProxyBypassListSelector extends ProxySelector {
      * @param proxySelector   the proxy selector to use.
      *                        **********************************************************************
      */
-
     public ProxyBypassListSelector(List<UriFilter> whiteListFilter, ProxySelector proxySelector) {
         super();
         if (whiteListFilter == null) {

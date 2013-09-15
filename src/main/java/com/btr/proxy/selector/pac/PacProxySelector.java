@@ -1,8 +1,8 @@
 package com.btr.proxy.selector.pac;
 
-import com.btr.proxy.util.Logger;
-import com.btr.proxy.util.Logger.LogLevel;
 import com.btr.proxy.util.ProxyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.*;
@@ -25,8 +25,8 @@ public class PacProxySelector extends ProxySelector {
     private static final String PAC_DIRECT = "DIRECT";
 
     private static volatile boolean enabled = true;
+    private Logger log = LoggerFactory.getLogger(getClass());
 
-    private final boolean JAVAX_PARSER = ScriptAvailability.isJavaxScriptingAvailable();
 
     private PacScriptParser pacScriptParser;
 
@@ -39,7 +39,6 @@ public class PacProxySelector extends ProxySelector {
      * @return true if enabled else false.
      *         **********************************************************************
      */
-
     public static boolean isEnabled() {
         return enabled;
     }
@@ -66,7 +65,6 @@ public class PacProxySelector extends ProxySelector {
      * @param pacSource the source for the PAC file.
      *                  **********************************************************************
      */
-
     public PacProxySelector(PacScriptSource pacSource) {
         super();
         selectEngine(pacSource);
@@ -82,17 +80,11 @@ public class PacProxySelector extends ProxySelector {
 
     private void selectEngine(PacScriptSource pacSource) {
         try {
-            if (this.JAVAX_PARSER) {
-                Logger.log(getClass(), LogLevel.INFO,
-                        "Using javax.script JavaScript engine.");
-                this.pacScriptParser = new JavaxPacScriptParser(pacSource);
-            } else {
-                Logger.log(getClass(), LogLevel.INFO,
-                        "Using Rhino JavaScript engine.");
-                this.pacScriptParser = new RhinoPacScriptParser(pacSource);
-            }
+            log.info(
+                    "Using javax.script JavaScript engine.");
+            this.pacScriptParser = new JavaxPacScriptParser(pacSource);
         } catch (Exception e) {
-            Logger.log(getClass(), LogLevel.ERROR, "PAC parser error.", e);
+            log.error("PAC parser error.", e);
         }
     }
 
@@ -158,7 +150,7 @@ public class PacProxySelector extends ProxySelector {
             }
             return proxies;
         } catch (ProxyEvaluationException e) {
-            Logger.log(getClass(), LogLevel.ERROR, "PAC resolving error.", e);
+            log.error("PAC resolving error.", e);
             return ProxyUtil.noProxyList();
         }
     }

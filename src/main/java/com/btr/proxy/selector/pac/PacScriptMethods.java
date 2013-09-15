@@ -1,7 +1,7 @@
 package com.btr.proxy.selector.pac;
 
-import com.btr.proxy.util.Logger;
-import com.btr.proxy.util.Logger.LogLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -26,6 +26,7 @@ public class PacScriptMethods implements ScriptMethods {
 
     private final static List<String> MONTH = Collections.unmodifiableList(
             Arrays.asList("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"));
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private Calendar currentTime;
 
@@ -36,7 +37,6 @@ public class PacScriptMethods implements ScriptMethods {
      * Constructor
      * **********************************************************************
      */
-
     public PacScriptMethods() {
         super();
     }
@@ -53,7 +53,6 @@ public class PacScriptMethods implements ScriptMethods {
      * @param cal a Calendar to set.
      *            **********************************************************************
      */
-
     public void setCurrentTime(Calendar cal) {
         this.currentTime = cal;
     }
@@ -62,7 +61,6 @@ public class PacScriptMethods implements ScriptMethods {
 
 
 // --------------------- Interface ScriptMethods ---------------------
-
 
     /**
      * **********************************************************************
@@ -86,7 +84,6 @@ public class PacScriptMethods implements ScriptMethods {
      * @return true if the current date matches the given range.
      *         **********************************************************************
      */
-
     public boolean dateRange(Object day1, Object month1, Object year1,
                              Object day2, Object month2, Object year2, Object gmt) {
         // Guess the parameter meanings.
@@ -191,7 +188,7 @@ public class PacScriptMethods implements ScriptMethods {
         try {
             return InetAddress.getByName(host).getHostAddress();
         } catch (UnknownHostException e) {
-            Logger.log(JavaxPacScriptParser.class, LogLevel.DEBUG,
+            log.debug(
                     "DNS name not resolvable {0}.", host);
             // Not resolvable.
         }
@@ -215,7 +212,7 @@ public class PacScriptMethods implements ScriptMethods {
                 result.append("; ");
             }
         } catch (UnknownHostException e) {
-            Logger.log(JavaxPacScriptParser.class, LogLevel.DEBUG,
+            log.debug(
                     "DNS name not resolvable {0}.", host);
         }
         return result.toString();
@@ -302,7 +299,7 @@ public class PacScriptMethods implements ScriptMethods {
             InetAddress.getByName(host).getHostAddress();
             return true;
         } catch (UnknownHostException ex) {
-            Logger.log(JavaxPacScriptParser.class, LogLevel.DEBUG,
+            log.debug(
                     "Hostname not resolveable {0}.", host);
             // Not resolvable
         }
@@ -356,7 +353,7 @@ public class PacScriptMethods implements ScriptMethods {
             }
             return InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            Logger.log(JavaxPacScriptParser.class, LogLevel.DEBUG,
+            log.debug(
                     "Local address not resolvable.");
             return "";
         }
@@ -573,7 +570,6 @@ public class PacScriptMethods implements ScriptMethods {
      * @return a Calendar set to the current time.
      *         **********************************************************************
      */
-
     private Calendar getCurrentTime(boolean useGmt) {
         if (this.currentTime != null) { // Only used for unit tests
             return (Calendar) this.currentTime.clone();

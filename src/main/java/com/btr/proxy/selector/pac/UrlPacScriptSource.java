@@ -1,7 +1,7 @@
 package com.btr.proxy.selector.pac;
 
-import com.btr.proxy.util.Logger;
-import com.btr.proxy.util.Logger.LogLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.*;
@@ -18,6 +18,8 @@ import java.net.*;
 public class UrlPacScriptSource implements PacScriptSource {
 // ------------------------------ FIELDS ------------------------------
 
+    private Logger log = LoggerFactory.getLogger(getClass());
+
     private final String scriptUrl;
     private String scriptContent;
     private long expireAtMillis;
@@ -31,7 +33,6 @@ public class UrlPacScriptSource implements PacScriptSource {
      * @param url the URL to download the script from.
      *            **********************************************************************
      */
-
     public UrlPacScriptSource(String url) {
         super();
         this.expireAtMillis = 0;
@@ -47,7 +48,6 @@ public class UrlPacScriptSource implements PacScriptSource {
      * @see com.btr.proxy.selector.pac.PacScriptSource#getScriptContent()
      *      **********************************************************************
      */
-
     public synchronized String getScriptContent() throws IOException {
         if (this.scriptContent == null ||
                 (this.expireAtMillis > 0
@@ -59,7 +59,7 @@ public class UrlPacScriptSource implements PacScriptSource {
                     this.scriptContent = downloadPacContent(this.scriptUrl);
                 }
             } catch (IOException e) {
-                Logger.log(getClass(), LogLevel.ERROR, "Loading script failed from: {0} with error {1}", this.scriptUrl, e);
+                log.error("Loading script failed from: {0} with error {1}", this.scriptUrl, e);
                 this.scriptContent = "";
                 throw e;
             }
@@ -97,7 +97,7 @@ public class UrlPacScriptSource implements PacScriptSource {
             }
             return result.toString();
         } catch (Exception e) {
-            Logger.log(getClass(), LogLevel.ERROR, "File reading error.", e);
+            log.error("File reading error.", e);
             throw new IOException(e.getMessage());
         }
     }

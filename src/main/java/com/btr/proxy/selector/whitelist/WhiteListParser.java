@@ -24,6 +24,5 @@ public interface WhiteListParser {
      * @return a list of UriFilters
      *         **********************************************************************
      */
-
     public List<UriFilter> parseWhiteList(String whiteList);
 }

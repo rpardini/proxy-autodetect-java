@@ -20,7 +20,6 @@ public class ProxyException extends Exception {
      * Constructor
      * **********************************************************************
      */
-
     public ProxyException() {
         super();
     }

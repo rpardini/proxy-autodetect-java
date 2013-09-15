@@ -1,6 +1,8 @@
 package com.btr.proxy.selector.whitelist;
 
 import com.btr.proxy.util.UriFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -20,6 +22,7 @@ public class IpRangeFilter implements UriFilter {
 // ------------------------------ FIELDS ------------------------------
 
     int numOfBits;
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private byte[] matchTo;
 
@@ -32,7 +35,6 @@ public class IpRangeFilter implements UriFilter {
      * @param matchTo the match subnet in CIDR notation.
      *                **********************************************************************
      */
-
     public IpRangeFilter(String matchTo) {
         super();
 
@@ -63,7 +65,6 @@ public class IpRangeFilter implements UriFilter {
      * @see com.btr.proxy.util.UriFilter#accept(java.net.URI)
      *      **********************************************************************
      */
-
     public boolean accept(URI uri) {
         if (uri == null || uri.getHost() == null) {
             return false;

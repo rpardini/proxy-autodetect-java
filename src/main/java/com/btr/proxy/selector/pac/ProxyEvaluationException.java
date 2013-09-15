@@ -22,7 +22,6 @@ public class ProxyEvaluationException extends ProxyException {
      * Constructor
      * **********************************************************************
      */
-
     public ProxyEvaluationException() {
         super();
     }

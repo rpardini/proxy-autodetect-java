@@ -1,6 +1,8 @@
 package com.btr.proxy.selector.whitelist;
 
 import com.btr.proxy.util.UriFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 
@@ -16,6 +18,7 @@ public class HostnameFilter implements UriFilter {
 // ------------------------------ FIELDS ------------------------------
 
     private static final String PROTOCOL_ENDING = "://";
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private String matchTo;
     private String protocolFilter;
@@ -31,7 +34,6 @@ public class HostnameFilter implements UriFilter {
      * @param matchTo the match criteria.
      *                **********************************************************************
      */
-
     public HostnameFilter(Mode mode, String matchTo) {
         super();
         this.mode = mode;
@@ -66,7 +68,6 @@ public class HostnameFilter implements UriFilter {
      * @see com.btr.proxy.util.UriFilter#accept(java.net.URI)
      *      **********************************************************************
      */
-
     public boolean accept(URI uri) {
         if (uri == null || uri.getAuthority() == null) {
             return false;
@@ -105,7 +106,6 @@ public class HostnameFilter implements UriFilter {
      * @return true if passed else false.
      *         **********************************************************************
      */
-
     private boolean isProtocolMatching(URI uri) {
         return this.protocolFilter == null
                 || uri.getScheme() == null

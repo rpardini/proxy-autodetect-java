@@ -1,5 +1,8 @@
 package com.btr.proxy.selector.misc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.Proxy;
 import java.net.ProxySelector;
@@ -26,6 +29,7 @@ public class ProxyListFallbackSelector extends ProxySelector {
 
     // Retry a unresponsive proxy after 10 minutes per default.
     private static final int DEFAULT_RETRY_DELAY = 1000 * 60 * 10;
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private ProxySelector delegate;
     private ConcurrentHashMap<SocketAddress, Long> failedDelayCache;
@@ -40,7 +44,6 @@ public class ProxyListFallbackSelector extends ProxySelector {
      * @param delegate the delegate to use.
      *                 **********************************************************************
      */
-
     public ProxyListFallbackSelector(ProxySelector delegate) {
         this(DEFAULT_RETRY_DELAY, delegate);
     }
@@ -70,7 +73,6 @@ public class ProxyListFallbackSelector extends ProxySelector {
      * @param retryAfterMs The retryAfterMs to set.
      *                     **********************************************************************
      */
-
     final void setRetryAfterMs(long retryAfterMs) {
         this.retryAfterMs = retryAfterMs;
     }
@@ -84,7 +86,6 @@ public class ProxyListFallbackSelector extends ProxySelector {
      * @see java.net.ProxySelector#connectFailed(java.net.URI, java.net.SocketAddress, java.io.IOException)
      *      **********************************************************************
      */
-
     @Override
     public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
         this.failedDelayCache.put(sa, System.currentTimeMillis());

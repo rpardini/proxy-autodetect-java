@@ -22,6 +22,5 @@ public interface ProxySearchStrategy {
      * @return a ProxySelector, null if none is found.
      *         **********************************************************************
      */
-
     public ProxySelector getProxySelector() throws ProxyException;
 }

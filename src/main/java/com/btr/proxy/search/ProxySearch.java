@@ -6,13 +6,11 @@ import com.btr.proxy.search.wpad.WpadProxySearchStrategy;
 import com.btr.proxy.selector.misc.BufferedProxySelector;
 import com.btr.proxy.selector.misc.ProxyListFallbackSelector;
 import com.btr.proxy.selector.pac.PacProxySelector;
-import com.btr.proxy.util.Logger;
-import com.btr.proxy.util.Logger.LogBackEnd;
-import com.btr.proxy.util.Logger.LogLevel;
 import com.btr.proxy.util.ProxyException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.ProxySelector;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +34,8 @@ import java.util.List;
 public class ProxySearch implements ProxySearchStrategy {
 // ------------------------------ FIELDS ------------------------------
 
+    private static Logger log = LoggerFactory.getLogger(ProxySearch.class);
+
     private static final int DEFAULT_PAC_CACHE_SIZE = 20;
 
     private static final long DEFAULT_PAC_CACHE_TTL = 1000 * 60 * 10; // 10 Minutes
@@ -44,6 +44,52 @@ public class ProxySearch implements ProxySearchStrategy {
     private int pacCacheSize;
     private long pacCacheTTL;
 
+// -------------------------- STATIC METHODS --------------------------
+
+    /**
+     * **********************************************************************
+     * Sets up a ProxySearch that uses a default search strategy suitable for
+     * every platform.
+     *
+     * @return a ProxySearch initialized with default settings.
+     *         **********************************************************************
+     */
+
+    public static ProxySearch getDefaultProxySearch() {
+        ProxySearch s = new ProxySearch();
+
+        s.addStrategy(Strategy.JAVA);
+        s.addStrategy(Strategy.ENV_VAR);
+        s.addStrategy(Strategy.WPAD);
+        log.debug("Using default search priority: {0}", s);
+
+        return s;
+    }
+
+    /**
+     * **********************************************************************
+     * Adds an search strategy to the list of proxy searches strategies.
+     *
+     * @param strategy the search strategy to add.
+     *                 **********************************************************************
+     */
+
+    public void addStrategy(Strategy strategy) {
+        switch (strategy) {
+            case WPAD:
+                this.strategies.add(new WpadProxySearchStrategy());
+                break;
+            case ENV_VAR:
+                this.strategies.add(new EnvProxySearchStrategy());
+                break;
+            case JAVA:
+                this.strategies.add(new JavaProxySearchStrategy());
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown strategy code!");
+        }
+    }
+
 // --------------------------- CONSTRUCTORS ---------------------------
 
     /**
@@ -51,7 +97,6 @@ public class ProxySearch implements ProxySearchStrategy {
      * Constructor
      * **********************************************************************
      */
-
     public ProxySearch() {
         super();
         this.strategies = new ArrayList<ProxySearchStrategy>();
@@ -78,6 +123,38 @@ public class ProxySearch implements ProxySearchStrategy {
         return sb.toString();
     }
 
+// ------------------------ INTERFACE METHODS ------------------------
+
+
+// --------------------- Interface ProxySearchStrategy ---------------------
+
+    /**
+     * **********************************************************************
+     * Gets the proxy selector that will use the configured search order.
+     *
+     * @return a ProxySelector, null if none was found for the current
+     *         builder configuration.
+     *         **********************************************************************
+     */
+
+    public ProxySelector getProxySelector() {
+        log.debug("Executing search strategies to find proxy selector");
+        for (ProxySearchStrategy strat : this.strategies) {
+            try {
+                ProxySelector selector = strat.getProxySelector();
+                if (selector != null) {
+                    selector = installBufferingAndFallbackBehaviour(selector);
+                    return selector;
+                }
+            } catch (ProxyException e) {
+                log.debug("Strategy {0} failed trying next one.", e);
+                // Ignore and try next strategy.
+            }
+        }
+
+        return null;
+    }
+
 // -------------------------- OTHER METHODS --------------------------
 
     /**
@@ -87,7 +164,6 @@ public class ProxySearch implements ProxySearchStrategy {
      * @param selector
      * @return **********************************************************************
      */
-
     private ProxySelector installBufferingAndFallbackBehaviour(ProxySelector selector) {
         if (selector instanceof PacProxySelector) {
             if (this.pacCacheSize > 0) {
@@ -124,7 +200,6 @@ public class ProxySearch implements ProxySearchStrategy {
      * Types of proxy detection supported by the builder.
      * **************************************************************************
      */
-
     public enum Strategy {
         // Use WPAD
         WPAD,
@@ -132,101 +207,5 @@ public class ProxySearch implements ProxySearchStrategy {
         ENV_VAR,
         /// Use Java Networking system properties
         JAVA
-    }
-
-// --------------------------- main() method ---------------------------
-
-    /**
-     * **********************************************************************
-     * For testing only. Will print the logging & proxy information to the console.
-     *
-     * @param args the command line arguments.
-     *             **********************************************************************
-     */
-
-    public static void main(String[] args) {
-        ProxySearch ps = ProxySearch.getDefaultProxySearch();
-        Logger.setBackend(new LogBackEnd() {
-            public void log(Class<?> clazz, LogLevel loglevel, String msg,
-                            Object... params) {
-                System.out.println(MessageFormat.format(msg, params));
-            }
-
-            public boolean isLogginEnabled(LogLevel logLevel) {
-                return true;
-            }
-        });
-        ps.getProxySelector();
-    }
-
-    /**
-     * **********************************************************************
-     * Sets up a ProxySearch that uses a default search strategy suitable for
-     * every platform.
-     *
-     * @return a ProxySearch initialized with default settings.
-     *         **********************************************************************
-     */
-
-    public static ProxySearch getDefaultProxySearch() {
-        ProxySearch s = new ProxySearch();
-
-        s.addStrategy(Strategy.JAVA);
-        s.addStrategy(Strategy.ENV_VAR);
-        s.addStrategy(Strategy.WPAD);
-        Logger.log(ProxySearch.class, LogLevel.TRACE, "Using default search priority: {0}", s);
-
-        return s;
-    }
-
-    /**
-     * **********************************************************************
-     * Adds an search strategy to the list of proxy searches strategies.
-     *
-     * @param strategy the search strategy to add.
-     *                 **********************************************************************
-     */
-
-    public void addStrategy(Strategy strategy) {
-        switch (strategy) {
-            case WPAD:
-                this.strategies.add(new WpadProxySearchStrategy());
-                break;
-            case ENV_VAR:
-                this.strategies.add(new EnvProxySearchStrategy());
-                break;
-            case JAVA:
-                this.strategies.add(new JavaProxySearchStrategy());
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown strategy code!");
-        }
-    }
-
-    /**
-     * **********************************************************************
-     * Gets the proxy selector that will use the configured search order.
-     *
-     * @return a ProxySelector, null if none was found for the current
-     *         builder configuration.
-     *         **********************************************************************
-     */
-
-    public ProxySelector getProxySelector() {
-        Logger.log(getClass(), LogLevel.TRACE, "Executing search strategies to find proxy selector");
-        for (ProxySearchStrategy strat : this.strategies) {
-            try {
-                ProxySelector selector = strat.getProxySelector();
-                if (selector != null) {
-                    selector = installBufferingAndFallbackBehaviour(selector);
-                    return selector;
-                }
-            } catch (ProxyException e) {
-                Logger.log(getClass(), LogLevel.DEBUG, "Strategy {0} failed trying next one.", e);
-                // Ignore and try next strategy.
-            }
-        }
-
-        return null;
     }
 }

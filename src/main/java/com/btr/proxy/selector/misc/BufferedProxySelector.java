@@ -1,5 +1,8 @@
 package com.btr.proxy.selector.misc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.Proxy;
 import java.net.ProxySelector;
@@ -21,6 +24,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BufferedProxySelector extends ProxySelector {
 // ------------------------------ FIELDS ------------------------------
 
+    private Logger log = LoggerFactory.getLogger(getClass());
+
     private ProxySelector delegate;
 
     private ConcurrentHashMap<String, CacheEntry> cache;
@@ -38,7 +43,6 @@ public class BufferedProxySelector extends ProxySelector {
      * @param delegate the delegate to use.
      *                 **********************************************************************
      */
-
     public BufferedProxySelector(int maxSize, long ttl, ProxySelector delegate) {
         super();
         this.cache = new ConcurrentHashMap<String, CacheEntry>();
@@ -56,7 +60,6 @@ public class BufferedProxySelector extends ProxySelector {
      * @see java.net.ProxySelector#connectFailed(java.net.URI, java.net.SocketAddress, java.io.IOException)
      *      **********************************************************************
      */
-
     @Override
     public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
         this.delegate.connectFailed(uri, sa, ioe);

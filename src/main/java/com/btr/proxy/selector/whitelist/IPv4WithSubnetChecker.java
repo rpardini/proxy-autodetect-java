@@ -1,5 +1,8 @@
 package com.btr.proxy.selector.whitelist;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.regex.Pattern;
 
 /**
@@ -20,6 +23,7 @@ public class IPv4WithSubnetChecker {
                     + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
                     + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
                     + "([01]?\\d\\d?|2[0-4]\\d|25[0-5])/(\\d|([12]\\d|3[0-2]))$");
+    private Logger log = LoggerFactory.getLogger(getClass());
 
 // -------------------------- STATIC METHODS --------------------------
 
@@ -31,7 +35,6 @@ public class IPv4WithSubnetChecker {
      * @return true if valid else false.
      *         **********************************************************************
      */
-
     public static boolean isValid(String possibleIPAddress) {
         return IP_SUB_PATTERN.matcher(possibleIPAddress).matches();
     }

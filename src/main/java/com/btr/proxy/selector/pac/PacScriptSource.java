@@ -21,6 +21,5 @@ public interface PacScriptSource {
      * @throws IOException on read error.
      *                     **********************************************************************
      */
-
     public String getScriptContent() throws IOException;
 }

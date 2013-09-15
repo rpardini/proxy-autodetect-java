@@ -21,6 +21,5 @@ public interface UriFilter {
      * @return true if it matches the criteria else false.
      *         **********************************************************************
      */
-
     public abstract boolean accept(URI uri);
 }

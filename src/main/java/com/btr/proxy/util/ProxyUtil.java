@@ -1,6 +1,8 @@
 package com.btr.proxy.util;
 
 import com.btr.proxy.selector.fixed.FixedProxySelector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.Proxy;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ public class ProxyUtil {
 
     private static List<Proxy> noProxyList;
     private static Pattern pattern = Pattern.compile("\\w*?:?/*([^:/]+):?(\\d*)/?");
+    private Logger log = LoggerFactory.getLogger(getClass());
 
 // -------------------------- STATIC METHODS --------------------------
 
@@ -35,7 +38,6 @@ public class ProxyUtil {
      * @return a FixedProxySelector using this settings, null on parse error.
      *         **********************************************************************
      */
-
     public static FixedProxySelector parseProxySettings(String proxyVar) {
         if (proxyVar == null || proxyVar.trim().length() == 0) {
             return null;

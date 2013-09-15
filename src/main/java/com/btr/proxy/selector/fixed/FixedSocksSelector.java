@@ -1,5 +1,8 @@
 package com.btr.proxy.selector.fixed;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
@@ -14,6 +17,10 @@ import java.net.Proxy;
  */
 
 public class FixedSocksSelector extends FixedProxySelector {
+// ------------------------------ FIELDS ------------------------------
+
+    private Logger log = LoggerFactory.getLogger(getClass());
+
 // --------------------------- CONSTRUCTORS ---------------------------
 
     /**

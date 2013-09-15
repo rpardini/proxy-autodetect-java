@@ -32,7 +32,6 @@ public interface ScriptMethods {
      * @return true if the current date matches the given range.
      *         **********************************************************************
      */
-
     public boolean dateRange(Object day1, Object month1, Object year1, Object day2, Object month2, Object year2,
                              Object gmt);
 

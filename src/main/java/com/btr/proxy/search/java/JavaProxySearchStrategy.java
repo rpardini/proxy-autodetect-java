@@ -5,8 +5,8 @@ import com.btr.proxy.selector.fixed.FixedProxySelector;
 import com.btr.proxy.selector.fixed.FixedSocksSelector;
 import com.btr.proxy.selector.misc.ProtocolDispatchSelector;
 import com.btr.proxy.selector.whitelist.ProxyBypassListSelector;
-import com.btr.proxy.util.Logger;
-import com.btr.proxy.util.Logger.LogLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.ProxySelector;
 
@@ -44,6 +44,10 @@ import java.net.ProxySelector;
  */
 
 public class JavaProxySearchStrategy implements ProxySearchStrategy {
+// ------------------------------ FIELDS ------------------------------
+
+    private Logger log = LoggerFactory.getLogger(getClass());
+
 // --------------------------- CONSTRUCTORS ---------------------------
 
     /**
@@ -69,14 +73,13 @@ public class JavaProxySearchStrategy implements ProxySearchStrategy {
      * @return a configured ProxySelector, null if none is found.
      *         **********************************************************************
      */
-
     public ProxySelector getProxySelector() {
         ProtocolDispatchSelector ps = new ProtocolDispatchSelector();
 
         if (!proxyPropertyPresent()) {
             return null;
         }
-        Logger.log(getClass(), LogLevel.TRACE, "Using settings from Java System Properties");
+        log.debug("Using settings from Java System Properties");
 
 
         setupProxyForProtocol(ps, "http", 80);
@@ -96,7 +99,6 @@ public class JavaProxySearchStrategy implements ProxySearchStrategy {
      * @return true if the http.proxyHost is available as system property.
      *         **********************************************************************
      */
-
     private boolean proxyPropertyPresent() {
         return System.getProperty("http.proxyHost") != null
                 && System.getProperty("http.proxyHost").trim().length() > 0;
@@ -124,7 +126,7 @@ public class JavaProxySearchStrategy implements ProxySearchStrategy {
             return;
         }
 
-        Logger.log(getClass(), LogLevel.TRACE, protocol.toUpperCase() + " proxy {0}:{1} found using whitelist: {2}", host, port, whiteList);
+        log.debug(protocol.toUpperCase() + " proxy {0}:{1} found using whitelist: {2}", host, port, whiteList);
 
         ProxySelector protocolSelector = new FixedProxySelector(host, Integer.parseInt(port));
         if (whiteList.trim().length() > 0) {
@@ -147,7 +149,7 @@ public class JavaProxySearchStrategy implements ProxySearchStrategy {
         String host = System.getProperty("socksProxyHost");
         String port = System.getProperty("socksProxyPort", "1080");
         if (host != null && host.trim().length() > 0) {
-            Logger.log(getClass(), LogLevel.TRACE, "Socks proxy {0}:{1} found", host, port);
+            log.debug("Socks proxy {0}:{1} found", host, port);
             ps.setSelector("socks", new FixedSocksSelector(host, Integer.parseInt(port)));
         }
     }

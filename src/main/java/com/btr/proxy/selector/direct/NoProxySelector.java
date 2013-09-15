@@ -1,6 +1,8 @@
 package com.btr.proxy.selector.direct;
 
 import com.btr.proxy.util.ProxyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.Proxy;
@@ -22,6 +24,7 @@ public class NoProxySelector extends ProxySelector {
 // ------------------------------ FIELDS ------------------------------
 
     private static NoProxySelector instance;
+    private Logger log = LoggerFactory.getLogger(getClass());
 
 // -------------------------- STATIC METHODS --------------------------
 
@@ -32,7 +35,6 @@ public class NoProxySelector extends ProxySelector {
      * @return a DirectSelector.
      *         **********************************************************************
      */
-
     public static synchronized NoProxySelector getInstance() {
         if (NoProxySelector.instance == null) {
             NoProxySelector.instance = new NoProxySelector();
@@ -47,7 +49,6 @@ public class NoProxySelector extends ProxySelector {
      * Constructor
      * **********************************************************************
      */
-
     private NoProxySelector() {
         super();
     }
@@ -61,7 +62,6 @@ public class NoProxySelector extends ProxySelector {
      * @see java.net.ProxySelector#connectFailed(java.net.URI, java.net.SocketAddress, java.io.IOException)
      *      **********************************************************************
      */
-
     @Override
     public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
         // Not used.

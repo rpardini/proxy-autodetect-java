@@ -1,6 +1,8 @@
 package com.btr.proxy.selector.misc;
 
 import com.btr.proxy.selector.direct.NoProxySelector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.Proxy;
@@ -23,6 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ProtocolDispatchSelector extends ProxySelector {
 // ------------------------------ FIELDS ------------------------------
 
+    private Logger log = LoggerFactory.getLogger(getClass());
+
     private Map<String, ProxySelector> selectors;
     private ProxySelector fallbackSelector;
 
@@ -33,7 +37,6 @@ public class ProtocolDispatchSelector extends ProxySelector {
      * Constructor
      * **********************************************************************
      */
-
     public ProtocolDispatchSelector() {
         super();
         this.selectors = new ConcurrentHashMap<String, ProxySelector>();
@@ -50,7 +53,6 @@ public class ProtocolDispatchSelector extends ProxySelector {
      * @param selector the selector to use.
      *                 **********************************************************************
      */
-
     public void setFallbackSelector(ProxySelector selector) {
         if (selector == null) {
             throw new NullPointerException("Selector must not be null.");
@@ -67,7 +69,6 @@ public class ProtocolDispatchSelector extends ProxySelector {
      * @see java.net.ProxySelector#connectFailed(java.net.URI, java.net.SocketAddress, java.io.IOException)
      *      **********************************************************************
      */
-
     @Override
     public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
         ProxySelector selector = this.fallbackSelector;

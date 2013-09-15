@@ -3,9 +3,9 @@ package com.btr.proxy.search.env;
 import com.btr.proxy.search.ProxySearchStrategy;
 import com.btr.proxy.selector.misc.ProtocolDispatchSelector;
 import com.btr.proxy.selector.whitelist.ProxyBypassListSelector;
-import com.btr.proxy.util.Logger;
-import com.btr.proxy.util.Logger.LogLevel;
 import com.btr.proxy.util.ProxyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.ProxySelector;
 import java.util.Properties;
@@ -29,6 +29,8 @@ import java.util.Properties;
 public class EnvProxySearchStrategy implements ProxySearchStrategy {
 // ------------------------------ FIELDS ------------------------------
 
+    private Logger log = LoggerFactory.getLogger(getClass());
+
     private String httpEnv;
     private String httpsEnv;
     private String ftpEnv;
@@ -47,7 +49,6 @@ public class EnvProxySearchStrategy implements ProxySearchStrategy {
      * Will use the default environment variables.
      * **********************************************************************
      */
-
     public EnvProxySearchStrategy() {
         this("http_proxy", "https_proxy", "ftp_proxy", "no_proxy");
     }
@@ -98,9 +99,8 @@ public class EnvProxySearchStrategy implements ProxySearchStrategy {
      * @return a configured ProxySelector, null if none is found.
      *         **********************************************************************
      */
-
     public ProxySelector getProxySelector() {
-        Logger.log(getClass(), LogLevel.TRACE, "Inspecting environment variables.");
+        log.debug("Inspecting environment variables.");
 
         // Check if http_proxy var is set.
         ProxySelector httpPS = ProxyUtil.parseProxySettings(this.httpProxy);
@@ -108,24 +108,24 @@ public class EnvProxySearchStrategy implements ProxySearchStrategy {
             return null;
         }
 
-        Logger.log(getClass(), LogLevel.TRACE, "Http Proxy is {0}", this.httpProxy);
+        log.debug("Http Proxy is {0}", this.httpProxy);
         ProtocolDispatchSelector ps = new ProtocolDispatchSelector();
         ps.setSelector("http", httpPS);
 
         ProxySelector httpsPS = ProxyUtil.parseProxySettings(this.httpsProxy);
-        Logger.log(getClass(), LogLevel.TRACE, "Https Proxy is {0}", httpsPS == null ? this.httpsProxy : httpsPS);
+        log.debug("Https Proxy is {0}", httpsPS == null ? this.httpsProxy : httpsPS);
         ps.setSelector("https", httpsPS != null ? httpsPS : httpPS);
 
         ProxySelector ftpPS = ProxyUtil.parseProxySettings(this.ftpProxy);
         if (ftpPS != null) {
-            Logger.log(getClass(), LogLevel.TRACE, "Ftp Proxy is {0}", this.ftpProxy);
+            log.debug("Ftp Proxy is {0}", this.ftpProxy);
             ps.setSelector("ftp", ftpPS);
         }
 
         // Wrap with white list support
         ProxySelector result = ps;
         if (this.noProxy != null && this.noProxy.trim().length() > 0) {
-            Logger.log(getClass(), LogLevel.TRACE, "Using proxy bypass list: {0}", this.noProxy);
+            log.debug("Using proxy bypass list: {0}", this.noProxy);
             result = new ProxyBypassListSelector(this.noProxy, ps);
         }
 
@@ -141,7 +141,6 @@ public class EnvProxySearchStrategy implements ProxySearchStrategy {
      * @return the settings.
      *         **********************************************************************
      */
-
     public Properties readSettings() {
         Properties result = new Properties();
         result.setProperty(this.httpEnv, this.httpProxy);

@@ -2,6 +2,8 @@ package com.btr.proxy.selector.whitelist;
 
 import com.btr.proxy.selector.whitelist.HostnameFilter.Mode;
 import com.btr.proxy.util.UriFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,10 @@ import java.util.List;
  */
 
 public class DefaultWhiteListParser implements WhiteListParser {
+// ------------------------------ FIELDS ------------------------------
+
+    private Logger log = LoggerFactory.getLogger(getClass());
+
 // ------------------------ INTERFACE METHODS ------------------------
 
 
@@ -48,7 +54,6 @@ public class DefaultWhiteListParser implements WhiteListParser {
      * @see com.btr.proxy.selector.whitelist.WhiteListParser#parseWhiteList(java.lang.String)
      *      **********************************************************************
      */
-
     public List<UriFilter> parseWhiteList(String whiteList) {
         List<UriFilter> result = new ArrayList<UriFilter>();
 
@@ -81,7 +86,6 @@ public class DefaultWhiteListParser implements WhiteListParser {
      * @param token
      * @return **********************************************************************
      */
-
     private boolean isIP4SubnetFilter(String token) {
         return IPv4WithSubnetChecker.isValid(token);
     }

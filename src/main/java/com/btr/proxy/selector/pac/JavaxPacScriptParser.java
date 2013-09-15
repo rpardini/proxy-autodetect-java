@@ -1,7 +1,7 @@
 package com.btr.proxy.selector.pac;
 
-import com.btr.proxy.util.Logger;
-import com.btr.proxy.util.Logger.LogLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -26,6 +26,7 @@ public class JavaxPacScriptParser implements PacScriptParser {
 // ------------------------------ FIELDS ------------------------------
 
     static final String SCRIPT_METHODS_OBJECT = "__pacutil";
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     private final PacScriptSource source;
     private final ScriptEngine engine;
@@ -84,7 +85,7 @@ public class JavaxPacScriptParser implements PacScriptParser {
             try {
                 engine.eval(toEval.toString());
             } catch (ScriptException e) {
-                Logger.log(getClass(), LogLevel.ERROR,
+                log.error(
                         "JS evaluation error when creating alias for " + name + ".", e);
                 throw new ProxyEvaluationException(
                         "Error setting up script engine", e);
@@ -123,7 +124,6 @@ public class JavaxPacScriptParser implements PacScriptParser {
 
 // --------------------- Interface PacScriptParser ---------------------
 
-
     /**
      * **********************************************************************
      * Evaluates the given URL and host against the PAC script.
@@ -144,7 +144,7 @@ public class JavaxPacScriptParser implements PacScriptParser {
             Object result = this.engine.eval(script.toString());
             return (String) result;
         } catch (Exception e) {
-            Logger.log(getClass(), LogLevel.ERROR, "JS evaluation error.", e);
+            log.error("JS evaluation error.", e);
             throw new ProxyEvaluationException(
                     "Error while executing PAC script: " + e.getMessage(), e);
         }

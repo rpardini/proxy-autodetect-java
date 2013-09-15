@@ -3,9 +3,9 @@ package com.btr.proxy.search.wpad;
 import com.btr.proxy.search.ProxySearchStrategy;
 import com.btr.proxy.selector.pac.PacProxySelector;
 import com.btr.proxy.selector.pac.UrlPacScriptSource;
-import com.btr.proxy.util.Logger;
-import com.btr.proxy.util.Logger.LogLevel;
 import com.btr.proxy.util.ProxyException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.*;
@@ -30,6 +30,10 @@ import java.util.Properties;
  */
 
 public class WpadProxySearchStrategy implements ProxySearchStrategy {
+// ------------------------------ FIELDS ------------------------------
+
+    private Logger log = LoggerFactory.getLogger(getClass());
+
 // --------------------------- CONSTRUCTORS ---------------------------
 
     /**
@@ -56,10 +60,9 @@ public class WpadProxySearchStrategy implements ProxySearchStrategy {
      * @throws ProxyException on error.
      *                        **********************************************************************
      */
-
     public ProxySelector getProxySelector() throws ProxyException {
         try {
-            Logger.log(getClass(), LogLevel.TRACE, "Using WPAD to find a proxy");
+            log.debug("Using WPAD to find a proxy");
 
             String pacScriptUrl = detectScriptUrlPerDHCP();
             if (pacScriptUrl == null) {
@@ -68,10 +71,10 @@ public class WpadProxySearchStrategy implements ProxySearchStrategy {
             if (pacScriptUrl == null) {
                 return null;
             }
-            Logger.log(getClass(), LogLevel.TRACE, "PAC script url found: {0}", pacScriptUrl);
+            log.debug("PAC script url found: {0}", pacScriptUrl);
             return new PacProxySelector(new UrlPacScriptSource(pacScriptUrl));
         } catch (IOException e) {
-            Logger.log(getClass(), LogLevel.ERROR, "Error during WPAD search.", e);
+            log.error("Error during WPAD search.", e);
             throw new ProxyException(e);
         }
     }
@@ -85,7 +88,6 @@ public class WpadProxySearchStrategy implements ProxySearchStrategy {
      * @return the settings.
      *         **********************************************************************
      */
-
     public Properties readSettings() {
         try {
             String pacScriptUrl = detectScriptUrlPerDHCP();
@@ -113,7 +115,7 @@ public class WpadProxySearchStrategy implements ProxySearchStrategy {
      */
 
     private String detectScriptUrlPerDHCP() {
-        Logger.log(getClass(), LogLevel.DEBUG, "Searching per DHCP not supported yet.");
+        log.debug("Searching per DHCP not supported yet.");
         // TODO Rossi 28.04.2009 Not implemented yet.
         return null;
     }
@@ -131,7 +133,7 @@ public class WpadProxySearchStrategy implements ProxySearchStrategy {
         String result = null;
         String fqdn = InetAddress.getLocalHost().getCanonicalHostName();
 
-        Logger.log(getClass(), LogLevel.TRACE, "Searching per DNS guessing.");
+        log.debug("Searching per DNS guessing.");
 
         int index = fqdn.indexOf('.');
         while (index != -1 && result == null) {
@@ -145,7 +147,7 @@ public class WpadProxySearchStrategy implements ProxySearchStrategy {
             // Try to connect to URL
             try {
                 URL lookupURL = new URL("http://wpad." + fqdn + "/wpad.dat");
-                Logger.log(getClass(), LogLevel.TRACE, "Trying url: {0}", lookupURL);
+                log.debug("Trying url: {0}", lookupURL);
 
                 HttpURLConnection con = (HttpURLConnection) lookupURL.openConnection(Proxy.NO_PROXY);
                 con.setInstanceFollowRedirects(true);
@@ -155,7 +157,7 @@ public class WpadProxySearchStrategy implements ProxySearchStrategy {
                 }
                 con.disconnect();
             } catch (UnknownHostException e) {
-                Logger.log(getClass(), LogLevel.DEBUG, "Not available!");
+                log.debug("Not available!");
                 // Not a real error, try next address
             }
 
