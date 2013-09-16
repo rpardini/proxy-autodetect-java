@@ -30,6 +30,7 @@ public class ProxySearchTest {
         List<Proxy> select = proxySelector.select(new URI("http://www.me.com.br"));
         for (Proxy proxy : select) {
             System.out.println(proxy.toString());
+
         }
 
 
