@@ -1,6 +1,9 @@
 package net.pardini.proxy.autodetect;
 
 import com.btr.proxy.search.ProxySearch;
+import org.apache.http.HttpHost;
+import org.apache.http.client.HttpClient;
+import org.apache.http.conn.params.ConnRoutePNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +26,7 @@ public class SmartProxyAutodetector implements ProxyAutodetector {
     private Logger log = LoggerFactory.getLogger(getClass());
     private ProxySelector proxySelector;
 
-// ------------------------ INTERFACE METHODS ------------------------
+// --------------------------- CONSTRUCTORS ---------------------------
 
     public SmartProxyAutodetector() {
         ProxySearch defaultProxySearch = ProxySearch.getDefaultProxySearch();
@@ -33,28 +36,45 @@ public class SmartProxyAutodetector implements ProxyAutodetector {
         }
     }
 
+// ------------------------ INTERFACE METHODS ------------------------
+
 
 // --------------------- Interface ProxyAutodetector ---------------------
 
     @Override
-    public String detectProxyForURL(final String url) {
+    public ProxyInfo detectProxyForURL(final String url) {
         if (proxySelector == null) return null;
 
-        for (Proxy proxy : parseURL(url)) {
-            log.info("Detected proxy {}", proxy.toString());
-            return proxy.toString();
+        URI uri = parseURL(url);
+
+        final List<Proxy> select = proxySelector.select(uri);
+        for (Proxy proxy : select) {
+            if (proxy.type() == Proxy.Type.HTTP) {
+                ProxyInfo info = new ProxyInfo(proxy);
+                return info;
+            }
         }
 
         return null;
     }
 
-    private List<Proxy> parseURL(final String url) {
-        final List<Proxy> select;
+    @Override
+    public void setProxyForHttpClient(final HttpClient client, final String url) {
+        ProxyInfo theProxy = this.detectProxyForURL(url);
+        if (theProxy != null) {
+            HttpHost proxy = new HttpHost(theProxy.getHost(), theProxy.getPort(), "http");
+            client.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+        }
+    }
+
+// -------------------------- OTHER METHODS --------------------------
+
+    private URI parseURL(final String url) {
         try {
-            select = proxySelector.select(new URI(url));
+            URI uri = new URI(url);
+            return uri;
         } catch (URISyntaxException e) {
             throw new RuntimeException(String.format("Error parsing URL '%s': %s", url, e.getMessage()), e);
         }
-        return select;
     }
 }
